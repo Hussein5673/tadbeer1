@@ -1,0 +1,61 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    /* Project structure */
+    "rootDir": ".",
+    "outDir": "dist",
+
+    /* Language & emit */
+    "target": "ES2020",
+    "module": "CommonJS",
+
+    /* DOM + runtime support */
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    /* Decorators (NestJS) */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    /* Source maps & helpers */
+    "sourceMap": true,
+    "importHelpers": true,
+
+    /* Module resolution */
+    "moduleResolution": "node",
+    "baseUrl": ".",
+
+    /* Interop */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* JSON */
+    "resolveJsonModule": true,
+
+    /* Type checking */
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+
+    /* 🔑 PATH ALIASES (CRITICAL FIX) */
+    "paths": {
+      "@ui": ["packages/tadbeer-ui/src/index.ts"],
+      "@ui/*": ["packages/tadbeer-ui/src/*"],
+
+      "@tadbeer/shared": ["packages/tadbeer-shared/src/index.ts"],
+      "@tadbeer/ui": ["packages/tadbeer-ui/src/index.ts"],
+      "@tadbeer/server": ["packages/tadbeer-server/src/index.ts"],
+      "@tadbeer/utils": ["packages/tadbeer-utils/src/index.ts"],
+      "@tadbeer/sdk": ["packages/tadbeer-sdk/src/index.ts"]
+    }
+  },
+
+  /* 🔕 Exclusions */
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "**/__mocks__/**"
+  ]
+}

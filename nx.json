@@ -1,0 +1,155 @@
+{
+  "workspaceLayout": {
+    "appsDir": "packages",
+    "libsDir": "packages"
+  },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "excludeStories": [
+      "default",
+      "!{projectRoot}/.storybook/*",
+      "!{projectRoot}/**/tsconfig.storybook.json",
+      "!{projectRoot}/**/*.stories.(ts|tsx)",
+      "!{projectRoot}/**/__stories__/*"
+    ],
+    "excludeTests": [
+      "default",
+      "!{projectRoot}/**/jest.config.(js|ts)",
+      "!{projectRoot}/**/tsconfig.spec.json",
+      "!{projectRoot}/**/*.test.(ts|tsx)",
+      "!{projectRoot}/**/*.spec.(ts|tsx)",
+      "!{projectRoot}/**/*.integration-spec.ts",
+      "!{projectRoot}/**/__tests__/*"
+    ],
+    "production": [
+      "default",
+      "excludeStories",
+      "excludeTests",
+      "!{projectRoot}/**/__mocks__/*",
+      "!{projectRoot}/**/testing/*"
+    ]
+  },
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "inputs": ["^production", "production"],
+      "dependsOn": ["^build"]
+    },
+    "start": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "cache": true,
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "eslintConfig": "{projectRoot}/eslint.config.mjs",
+        "cache": true,
+        "cacheLocation": "{workspaceRoot}/.cache/eslint"
+      },
+      "configurations": {
+        "ci": {
+          "cacheStrategy": "content"
+        },
+        "fix": {
+          "fix": true
+        }
+      },
+      "dependsOn": ["^build"]
+    },
+    "fmt": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "prettier {args.files} --check --cache {args.cache} --cache-location {args.cacheLocation} --write {args.write} --cache-strategy {args.cacheStrategy}",
+        "cache": true,
+        "cacheLocation": "../../.cache/prettier/{projectRoot}",
+        "cacheStrategy": "metadata",
+        "write": false
+      },
+      "configurations": {
+        "ci": {
+          "cacheStrategy": "content"
+        },
+        "fix": {
+          "write": true
+        }
+      },
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsgo -p tsconfig.json"
+      },
+      "configurations": {
+        "watch": {
+          "command": "tsgo -p tsconfig.json --watch"
+        }
+      },
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": [
+        "^default",
+        "excludeStories",
+        "{workspaceRoot}/jest.preset.js"
+      ],
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "jestConfig": "{projectRoot}/jest.config.mjs",
+        "coverage": true,
+        "coverageReporters": ["text-summary"],
+        "cacheDirectory": "../../.cache/jest/{projectRoot}"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "maxWorkers": 3
+        },
+        "coverage": {
+          "coverageReporters": ["lcov", "text"]
+        },
+        "watch": {
+          "watch": true
+        }
+      }
+    },
+    "@nx/eslint:lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/packages/tadbeer-eslint-rules/**/*"
+      ]
+    },
+    "@nx/vite:build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
+    }
+  },
+  "installation": {
+    "version": "22.3.3"
+  },
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint",
+        "bundler": "vite",
+        "compiler": "swc",
+        "unitTestRunner": "jest",
+        "projectNameAndRootFormat": "derived"
+      }
+    }
+  },
+  "defaultBase": "main"
+}
